@@ -1,0 +1,56 @@
+1. Click on "I agree to our..."
+2. Click on guest account
+3. Click on allow notifications
+4. Tap on 'Allow' (System Dialog)
+5. Claim daily streak
+6. Click on I'm committed
+7. Tap on 'Skip'
+8. Scroll down (1 sec) and then up (1 sec)
+9. Tap on 'Shop' tab
+10. Scroll down 3x (1 sec)
+11. Scroll up (1 sec)
+12. Click on bookmark of product (1 sec)
+13. Click on product
+14. Scroll down (1 sec)
+15. Click on Favorites, Gifts, New Fits
+16. Click on "View on ..."
+17. Click on X (wait 4 sec)
+18. Scroll down 2x (1 sec)
+19. Scroll up
+20. Tap on search
+21. Type Nike (wait 3 sec)
+22. Scroll down (1 sec) and then scroll up (1 sec)
+23. Click on "Items" subtab
+24. Scroll down (1 sec)
+25. Click on bookmark of 3 products (1 sec)
+26. Scroll down (1 sec)
+27. Click on bookmark of product (1 sec)
+28. Scroll up (0.5 sec)
+29. Click on X in search bar
+30. Scroll up 2x (1 sec)
+31. Click on 'Wishlist' tab
+32. Scroll down and up (1 sec)
+33. Click on "New Fits" (1 sec)
+34. Click on "Gifts" (1 sec)
+35. Click on "Favorites" (1 sec)
+36. Click on filter icon (1 sec)
+37. Click outside bottom sheet
+38. Click on filter icon
+39. Click on "Price: high to low"
+40. Click on "Apply" (2 sec)
+41. Scroll down and up (1 sec)
+42. Click on profile icon
+43. Click on lists item
+44. Click on + icon
+45. Click on list name input
+46. Type Hello
+47. Click on save list (3 sec)
+48. Click on back arrow
+49. Scroll down and up (1 sec)
+50. Click edit profile label
+51. Click first name input
+52. Type Hello
+53. Click last name input
+54. Type World
+55. Click on save
+56. Scroll down
