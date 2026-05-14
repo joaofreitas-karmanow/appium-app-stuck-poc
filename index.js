@@ -1,4 +1,5 @@
 import { remote } from 'webdriverio';
+import fs from 'fs';
 
 
 const capabilities = {
@@ -23,6 +24,8 @@ var driver;
 async function runTest() {
   driver = await remote(wdOpts);
   try {
+    await driver.startRecordingScreen();
+
     const steps = Object.entries(plan()).sort(([step]) => step);
     for (var [step, statement] of steps) {
       console.info(`${step}`);
@@ -31,7 +34,14 @@ async function runTest() {
 
     return;
   } finally {
-    await driver.pause(1000);
+    await driver.pause(2000);
+
+    const video = await driver.stopRecordingScreen();
+    const path = `recordings/${driver.sessionId}.mp4`;
+    fs.mkdirSync(`recordings`);
+    fs.writeFileSync(path, Buffer.from(video, "base64"));
+
+    console.info(`recording available: ${path}`);
     await driver.deleteSession();
   }
 }
