@@ -1,5 +1,6 @@
 import { remote } from 'webdriverio';
 import fs from 'fs';
+import pino from 'pino';
 
 
 const capabilities = {
@@ -17,35 +18,57 @@ const wdOpts = {
   capabilities,
 };
 
+if (!fs.existsSync('sessions')) {
+  fs.mkdirSync();
+}
+
 /** @type {import('webdriverio').Browser} */
 var driver;
+var error;
 
+/** @type {pino.Logger} */
+var logger;
 
 async function runTest() {
   driver = await remote(wdOpts);
   try {
+    logger = pino(
+      {
+        transport: {
+          targets: [
+            {
+              target: 'pino-pretty',
+              options: { colorize: true }
+            },
+            {
+              target: 'pino/file',
+              options: { destination: `sessions/${driver.sessionId}` }
+            }
+          ]
+        }
+      }
+    );
+
     await driver.startRecordingScreen();
 
     const steps = Object.entries(scrollProfilePlan()).sort(([step]) => step);
     for (var [step, statement] of steps) {
-      console.info(`${step}`);
+      logger.info(`${step}`);
       await statement();
     }
 
     return;
+  } catch (err) {
+    error = err;
+    logger.error(err);
   } finally {
     await driver.pause(2000);
 
     const video = await driver.stopRecordingScreen();
-    const path = `recordings/${driver.sessionId}.mp4`;
-
-    if (!fs.existsSync('recordings')) {
-      fs.mkdirSync(`recordings`);
+    if (error) {
+      fs.writeFileSync(`sessions/${driver.sessionId}.mp4`, Buffer.from(video, "base64"));
     }
 
-    fs.writeFileSync(path, Buffer.from(video, "base64"));
-
-    console.info(`recording available: ${path}`);
     await driver.deleteSession();
   }
 }
@@ -342,7 +365,7 @@ function scrollProfilePlan() {
 
     "10. Read user id": async () => {
       const userId = await read({ description: 'User ID:' });
-      console.info(userId);
+      logger.info(userId);
     },
   };
 
@@ -533,4 +556,4 @@ async function scroll(...directions) {
   }
 }
 
-runTest().catch(console.error);
+runTest();
