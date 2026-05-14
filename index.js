@@ -12,7 +12,7 @@ const capabilities = {
 const wdOpts = {
   hostname: process.env.APPIUM_HOST || 'localhost',
   port: parseInt(process.env.APPIUM_PORT, 10) || 4723,
-  logLevel: 'error',
+  logLevel: 'silent',
   capabilities,
 };
 
@@ -68,11 +68,13 @@ function plan() {
     },
 
     "8. Scroll down (1 sec) and then up (1 sec)": async () => {
+      await driver.pause(1000);
       await scroll('down', 'up');
+
     },
 
     "9. Tap on 'Shop' tab": async () => {
-      await changeTab('Shop');
+      await driver.pause(4000);
       await changeTab('Shop');
     },
 
@@ -381,7 +383,7 @@ async function scroll(...directions) {
   const centerX = Math.floor(width / 2);
 
   for (const direction of directions) {
-    const isDown = direction === 'up';
+    const isDown = direction === 'down';
 
     const startY = isDown
       ? Math.floor(height * 0.7)
@@ -394,7 +396,7 @@ async function scroll(...directions) {
     await driver.performActions([
       {
         type: 'pointer',
-        id: 'finger1',
+        id: `finger1`,
         parameters: { pointerType: 'touch' },
         actions: [
           {
