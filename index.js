@@ -19,7 +19,7 @@ const wdOpts = {
 };
 
 if (!fs.existsSync('sessions')) {
-  fs.mkdirSync();
+  fs.mkdirSync('sessions');
 }
 
 /** @type {import('webdriverio').Browser} */
