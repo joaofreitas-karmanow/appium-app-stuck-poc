@@ -26,7 +26,7 @@ async function runTest() {
   try {
     await driver.startRecordingScreen();
 
-    const steps = Object.entries(plan()).sort(([step]) => step);
+    const steps = Object.entries(scrollProfilePlan()).sort(([step]) => step);
     for (var [step, statement] of steps) {
       console.info(`${step}`);
       await statement();
@@ -38,7 +38,11 @@ async function runTest() {
 
     const video = await driver.stopRecordingScreen();
     const path = `recordings/${driver.sessionId}.mp4`;
-    fs.mkdirSync(`recordings`);
+
+    if (!fs.existsSync('recordings')) {
+      fs.mkdirSync(`recordings`);
+    }
+
     fs.writeFileSync(path, Buffer.from(video, "base64"));
 
     console.info(`recording available: ${path}`);
@@ -296,6 +300,55 @@ function plan() {
   return steps;
 }
 
+function scrollProfilePlan() {
+  const steps = {
+    "1. Click on 'I agree to our...'": async () => {
+      await clickOn({ description: 'I agree' });
+    },
+
+    "2. Click on guest account (guestButton)": async () => {
+      await clickOn({ description: 'guestButton' });
+    },
+
+    "3. Click on allow notifications": async () => {
+      await clickOn({ description: 'Turn on Push Notifications' });
+    },
+
+    "4. Tap on 'Allow' (System Dialog)": async () => {
+      await clickOn({ text: 'Allow', strict: true });
+    },
+
+    "5. Claim daily streak": async () => {
+      await clickOn({ description: 'Claim daily streak' });
+    },
+
+    "6. Click on I'm committed": async () => {
+      await clickOn({ description: "Commited" });
+    },
+
+    "7. Tap on 'Skip'": async () => {
+      // Skip button in single view
+      await driver.tap({ x: 1173, y: 235 });
+    },
+
+    "8. Click on profile icon": async () => {
+      await driver.pause(1000);
+      await clickOn({ description: 'avatar' });
+    },
+
+    "9. Scroll down": async () => {
+      await scroll('down');
+    },
+
+    "10. Read user id": async () => {
+      const userId = await read({ description: 'User ID:' });
+      console.info(userId);
+    },
+  };
+
+  return steps;
+};
+
 /**
  * Change app tab.
  *
@@ -341,6 +394,42 @@ async function clickOn({
 
   await el.waitForDisplayed();
   await el.click();
+}
+
+/**
+ * Read text from an element matched by visible text or content description.
+ *
+ * @param {Object} options
+ * @param {string} [options.text] - Visible text match.
+ * @param {string} [options.description] - Content-desc match.
+ *
+ * @returns {Promise<string>} - Element text or content-desc value
+ */
+async function read({
+  text,
+  description,
+}) {
+  let selector;
+  let mode; // tracks how we matched
+
+  if (description) {
+    selector = `//*[contains(@content-desc, "${description}")]`;
+    mode = 'desc';
+  } else if (text) {
+    selector = `//*[contains(@text, "${text}")]`;
+    mode = 'text';
+  } else {
+    throw new Error('read requires either text or description');
+  }
+
+  const el = await driver.$(selector);
+  await el.waitForDisplayed();
+
+  if (mode === 'desc') {
+    return await el.getAttribute('content-desc');
+  }
+
+  return await el.getText();
 }
 
 /**
